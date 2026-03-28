@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Conditions générales · Kultiv</title>
+    <style>
+      :root {
+        --bg: #eef3f6;
+        --surface: rgba(255, 255, 255, 0.92);
+        --surface-soft: #f6f8fa;
+        --text: #15171a;
+        --muted: #6f7882;
+        --line: rgba(21, 23, 26, 0.08);
+        --accent: #2f7cf6;
+        --shadow: 0 24px 52px rgba(16, 22, 30, 0.08);
+        --radius-xl: 28px;
+        --radius-lg: 20px;
+        --radius-md: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.65), transparent 26%),
+          radial-gradient(circle at 100% 0%, rgba(47, 124, 246, 0.08), transparent 24%),
+          var(--bg);
+        color: var(--text);
+        font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+      }
+
+      body {
+        padding: 18px;
+      }
+
+      h1,
+      h2,
+      p,
+      ul {
+        margin: 0;
+      }
+
+      .shell {
+        width: min(100%, 760px);
+        margin: 0 auto;
+        display: grid;
+        gap: 14px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-xl);
+        padding: 22px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .hero {
+        color: #ffffff;
+        background:
+          radial-gradient(circle at 18% 18%, rgba(122, 214, 167, 0.22), transparent 28%),
+          radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.14), transparent 22%),
+          linear-gradient(145deg, #0d1116, #182129 58%, #163228);
+      }
+
+      .hero small {
+        display: block;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .hero h1 {
+        margin-top: 10px;
+        font-size: 2.2rem;
+        line-height: 0.96;
+        letter-spacing: -0.05em;
+      }
+
+      .hero p {
+        margin-top: 12px;
+        color: rgba(255, 255, 255, 0.76);
+        line-height: 1.55;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .pill {
+        padding: 9px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .section {
+        display: grid;
+        gap: 12px;
+      }
+
+      .section small {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .section h2 {
+        font-size: 1.08rem;
+      }
+
+      .section p,
+      .section li {
+        color: var(--muted);
+        line-height: 1.58;
+      }
+
+      .section ul {
+        padding-left: 18px;
+      }
+
+      .section li + li {
+        margin-top: 9px;
+      }
+
+      .note {
+        padding: 16px;
+        border-radius: var(--radius-lg);
+        background:
+          linear-gradient(180deg, rgba(47, 124, 246, 0.08), transparent 80%),
+          var(--surface-soft);
+        border: 1px solid var(--line);
+      }
+
+      .note strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="card hero">
+        <small>Kultiv · Le Sobeuhlier</small>
+        <h1>Conditions générales</h1>
+        <p>Document d’information client et base contractuelle affichée au moment de la création du compte.</p>
+        <div class="pill-row">
+          <span class="pill">Retour 14 jours</span>
+          <span class="pill">Paiement sécurisé</span>
+          <span class="pill">France: graines de collection</span>
+        </div>
+      </section>
+
+      <section class="card section">
+        <small>1. Objet</small>
+        <h2>Champ d’application</h2>
+        <p>Les présentes conditions encadrent l’utilisation de l’application Kultiv, la création d’un compte, l’achat de graines et de matériel, ainsi que les services associés à la commande, au paiement et au suivi client.</p>
+        <p>Elles s’appliquent aux consommateurs commandant à distance depuis le site ou l’application. Avant mise en ligne publique, les coordonnées complètes du vendeur, l’adresse postale de retour et l’email de contact doivent être renseignés définitivement.</p>
+      </section>
+
+      <section class="card section">
+        <small>2. Compte</small>
+        <h2>Création et responsabilité</h2>
+        <p>Le client s’engage à fournir des informations exactes lors de la création du compte et de la commande. Il est responsable de la confidentialité de ses identifiants et des informations de livraison qu’il transmet.</p>
+      </section>
+
+      <section class="card section">
+        <small>3. Produits</small>
+        <h2>Information et disponibilité</h2>
+        <p>Les visuels, descriptions et caractéristiques sont fournis à titre informatif pour aider le client à choisir. Les offres restent valables dans la limite des stocks disponibles.</p>
+      </section>
+
+      <section class="card section">
+        <small>4. Paiement</small>
+        <h2>Commande et règlement</h2>
+        <p>Les prix sont indiqués en euros. La commande devient ferme après validation par le client de ses coordonnées, enregistrement de la commande et paiement effectif du montant communiqué avant redirection vers le prestataire de paiement.</p>
+      </section>
+
+      <section class="card section">
+        <small>5. Livraison</small>
+        <h2>Adresse et expédition</h2>
+        <p>Les produits sont expédiés à l’adresse renseignée par le client. Celui-ci doit vérifier l’exactitude de l’adresse, de la ville et du code postal avant validation. En cas d’erreur de saisie, les conséquences liées à une mauvaise livraison peuvent rester à sa charge.</p>
+      </section>
+
+      <section class="card section">
+        <small>6. Rétractation</small>
+        <h2>Délai de 14 jours</h2>
+        <p>Conformément aux règles applicables à la vente à distance au consommateur, le client bénéficie en principe d’un délai de quatorze jours à compter de la réception de la commande pour exercer son droit de rétractation, sans avoir à motiver sa décision, sous réserve des exceptions légales applicables.</p>
+        <ul>
+          <li>La demande de rétractation doit être adressée au vendeur avant l’expiration du délai de 14 jours.</li>
+          <li>Le client renvoie ensuite les produits dans un état permettant leur revente, avec leurs accessoires éventuels, selon les modalités communiquées par le vendeur.</li>
+          <li>Le remboursement intervient selon les règles légales applicables après réception du retour ou preuve d’expédition suffisante.</li>
+        </ul>
+      </section>
+
+      <section class="card section">
+        <small>7. France</small>
+        <h2>Graines proposées comme articles de collection</h2>
+        <p>Pour les clients situés en France, les graines proposées dans la boutique sont vendues comme articles de collection. L’offre commerciale n’encourage pas la germination, la mise en culture, le bouturage ni la vente de plants.</p>
+        <p>Le client doit respecter l’ensemble de la réglementation locale qui lui est applicable. Toute utilisation contraire au droit en vigueur relève de sa seule responsabilité.</p>
+        <div class="note">
+          <strong>Point de vigilance</strong>
+          <p>Cette clause traduit la politique commerciale de la boutique au regard du cadre français applicable au chanvre et à la vente au détail. Elle vise à protéger à la fois le vendeur et le consommateur par une information claire avant la commande.</p>
+        </div>
+      </section>
+
+      <section class="card section">
+        <small>8. Conformité</small>
+        <h2>Produit reçu, retour et assistance</h2>
+        <p>En cas de produit manquant, endommagé ou non conforme, le client doit contacter le vendeur dans les meilleurs délais avec les éléments utiles permettant l’étude de sa demande. Une solution adaptée peut être proposée selon la situation: remplacement, remboursement ou autre traitement approprié.</p>
+      </section>
+
+      <section class="card section">
+        <small>9. Données</small>
+        <h2>Données personnelles et commande</h2>
+        <p>Les informations de compte, de panier et de commande peuvent être stockées localement dans l’application et transmises à Firebase pour le suivi des comptes, des commandes et des adresses de livraison. Le client peut demander des informations sur ses données ou leur suppression auprès du contact légal du vendeur.</p>
+      </section>
+
+      <section class="card section">
+        <small>10. Contact</small>
+        <h2>Informations à compléter avant publication</h2>
+        <p>Avant mise en ligne commerciale définitive, il faut compléter ici l’identité du vendeur, l’adresse postale, l’email de contact, le numéro d’immatriculation, l’adresse de retour et les modalités exactes de remboursement.</p>
+        <p>Version du document: 28 mars 2026.</p>
+      </section>
+    </main>
+  </body>
+</html>
