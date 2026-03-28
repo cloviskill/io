@@ -2691,6 +2691,219 @@
         }
       }
 
+      .order-modal-stack {
+        display: grid;
+        gap: 14px;
+      }
+
+      .order-modal-card {
+        display: grid;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 20px;
+        background: var(--surface-soft);
+      }
+
+      .order-modal-head,
+      .order-modal-summary,
+      .order-modal-actions,
+      .order-item-row {
+        display: flex;
+        align-items: center;
+      }
+
+      .order-modal-head,
+      .order-modal-summary,
+      .order-modal-actions {
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .order-modal-title {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .order-modal-total {
+        font-size: 1.28rem;
+        line-height: 0.94;
+        letter-spacing: -0.05em;
+        font-weight: 800;
+      }
+
+      .order-modal-summary {
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      .order-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 11px;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        background: var(--warning-soft);
+        color: var(--warning);
+      }
+
+      .order-status-badge.paid,
+      .order-status-badge.done {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .order-status-badge.shipped {
+        background: rgba(75, 131, 255, 0.14);
+        color: #3367df;
+      }
+
+      .order-status-badge.canceled {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
+      .order-progress {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        padding-top: 2px;
+      }
+
+      .order-progress::before {
+        content: "";
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        top: 13px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--line);
+      }
+
+      .order-progress-step {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 8px;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .order-progress-dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 2px solid var(--line);
+        background: var(--surface-strong);
+        color: transparent;
+      }
+
+      .order-progress-step.complete .order-progress-dot,
+      .order-progress-step.active .order-progress-dot {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .order-progress-label {
+        font-size: 0.74rem;
+        line-height: 1.3;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .order-progress-step.complete .order-progress-label,
+      .order-progress-step.active .order-progress-label {
+        color: var(--text);
+      }
+
+      .order-items-stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .order-item-row {
+        gap: 12px;
+        padding: 12px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.64);
+        align-items: center;
+      }
+
+      .order-item-thumb {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.34), transparent 30%),
+          linear-gradient(145deg, #e6ecf0, #cfd9e2);
+        flex: 0 0 auto;
+        position: relative;
+      }
+
+      .order-item-thumb img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .order-item-fallback {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 0.82rem;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .order-item-copy {
+        display: grid;
+        gap: 4px;
+        min-width: 0;
+        flex: 1;
+      }
+
+      .order-item-copy strong {
+        font-size: 0.92rem;
+        line-height: 1.12;
+      }
+
+      .order-item-copy span {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .order-item-total {
+        text-align: right;
+        font-weight: 800;
+        font-size: 0.92rem;
+      }
+
+      .order-alert {
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-size: 0.84rem;
+        line-height: 1.45;
+      }
+
+      .order-alert.success {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .order-alert.error {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
       .qr-card {
         display: grid;
         gap: 12px;
@@ -3513,6 +3726,25 @@
                   <div class="setting-main">
                     <div class="theme-icon">
                       <svg class="icon" aria-hidden="true">
+                        <use href="#icon-cart"></use>
+                      </svg>
+                    </div>
+                    <div>
+                      <strong>Commandes</strong>
+                      <div class="tiny" id="orders-state">connexion</div>
+                    </div>
+                  </div>
+                  <button class="icon-button" id="orders-button" type="button" aria-label="Ouvrir le suivi des commandes">
+                    <svg class="icon" aria-hidden="true">
+                      <use href="#icon-cart"></use>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="setting-row" style="margin-top: 12px;">
+                  <div class="setting-main">
+                    <div class="theme-icon">
+                      <svg class="icon" aria-hidden="true">
                         <use href="#icon-file"></use>
                       </svg>
                     </div>
@@ -4294,6 +4526,10 @@
       let firebaseAuth = null;
       let firestore = null;
       let googleProvider = null;
+      let clientOrders = [];
+      let clientOrdersLoaded = false;
+      let unsubscribeUserOrders = null;
+      let clientOrderFeedback = { orderId: "", message: "", tone: "" };
       let deferredInstallPrompt = null;
       let webIntroDismissed = false;
 
@@ -4409,6 +4645,8 @@
       const cartCountLabel = document.getElementById("cart-count-label");
       const clearCartButton = document.getElementById("clear-cart");
       const checkoutCartButton = document.getElementById("checkout-cart");
+      const ordersButton = document.getElementById("orders-button");
+      const ordersState = document.getElementById("orders-state");
       const legalButton = document.getElementById("legal-button");
       const cookieButton = document.getElementById("cookie-button");
       const themeButton = document.getElementById("theme-button");
@@ -4464,6 +4702,82 @@
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#39;");
+      }
+
+      function formatDateTime(value) {
+        const date =
+          typeof value?.toDate === "function"
+            ? value.toDate()
+            : value instanceof Date
+              ? value
+              : typeof value === "number"
+                ? new Date(value)
+                : null;
+
+        if (!date || Number.isNaN(date.getTime())) {
+          return "Date inconnue";
+        }
+
+        return new Intl.DateTimeFormat("fr-FR", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }).format(date);
+      }
+
+      function normalizeOrderStatus(status) {
+        const key = String(status || "pending_payment");
+        if (key === "preparing") {
+          return "paid";
+        }
+        return ["pending_payment", "paid", "shipped", "done", "canceled"].includes(key) ? key : "pending_payment";
+      }
+
+      function getOrderStatusLabel(status) {
+        const normalized = normalizeOrderStatus(status);
+        if (normalized === "pending_payment") {
+          return "Commande reçue";
+        }
+        if (normalized === "paid") {
+          return "Paiement reçu";
+        }
+        if (normalized === "shipped") {
+          return "Livraison en cours";
+        }
+        if (normalized === "done") {
+          return "Dans la boîte";
+        }
+        return "Commande annulée";
+      }
+
+      function getOrderStageIndex(status) {
+        const normalized = normalizeOrderStatus(status);
+        if (normalized === "done") {
+          return 3;
+        }
+        if (normalized === "shipped") {
+          return 2;
+        }
+        if (normalized === "paid") {
+          return 1;
+        }
+        return 0;
+      }
+
+      function isOrderCancelable(status) {
+        const normalized = normalizeOrderStatus(status);
+        return normalized === "pending_payment" || normalized === "paid";
+      }
+
+      function getOrderItemInitials(name) {
+        const clean = String(name || "").trim();
+        if (!clean) {
+          return "PR";
+        }
+        return clean
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((part) => part.charAt(0).toUpperCase())
+          .join("");
       }
 
       function getShopItem(productId) {
@@ -4672,6 +4986,7 @@
           profileProvider.textContent = "local";
           profileAvatar.textContent = "KS";
           logoutButton.disabled = true;
+          renderOrdersSetting();
           return;
         }
 
@@ -4691,6 +5006,7 @@
         }
 
         logoutButton.disabled = false;
+        renderOrdersSetting();
       }
 
       function isStandaloneApp() {
@@ -4905,6 +5221,285 @@
             },
             { merge: true }
           );
+      }
+
+      function renderOrdersSetting() {
+        if (!ordersState) {
+          return;
+        }
+
+        if (!authUser) {
+          ordersState.textContent = "connexion";
+          return;
+        }
+
+        if (!clientOrdersLoaded) {
+          ordersState.textContent = "chargement";
+          return;
+        }
+
+        ordersState.textContent = `${clientOrders.length} ${clientOrders.length > 1 ? "suivis" : "suivi"}`;
+      }
+
+      function sortClientOrders(list) {
+        return [...list].sort((left, right) => {
+          const leftValue =
+            typeof left.createdAt?.toMillis === "function"
+              ? left.createdAt.toMillis()
+              : typeof left.createdAt === "number"
+                ? left.createdAt
+                : 0;
+          const rightValue =
+            typeof right.createdAt?.toMillis === "function"
+              ? right.createdAt.toMillis()
+              : typeof right.createdAt === "number"
+                ? right.createdAt
+                : 0;
+          return rightValue - leftValue;
+        });
+      }
+
+      function listenClientOrders(user) {
+        if (unsubscribeUserOrders) {
+          unsubscribeUserOrders();
+          unsubscribeUserOrders = null;
+        }
+
+        clientOrders = [];
+        clientOrdersLoaded = false;
+        clientOrderFeedback = { orderId: "", message: "", tone: "" };
+        renderOrdersSetting();
+
+        if (!firestore || !user) {
+          return;
+        }
+
+        unsubscribeUserOrders = firestore
+          .collection("orders")
+          .where("userId", "==", user.uid)
+          .onSnapshot(
+            (snapshot) => {
+              clientOrders = sortClientOrders(
+                snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  ...doc.data(),
+                }))
+              );
+              clientOrdersLoaded = true;
+              renderOrdersSetting();
+              if (modalOpen && modal.dataset.view === "orders") {
+                openOrdersModal();
+              }
+            },
+            () => {
+              clientOrders = [];
+              clientOrdersLoaded = true;
+              renderOrdersSetting();
+              if (modalOpen && modal.dataset.view === "orders") {
+                openOrdersModal();
+              }
+            }
+          );
+      }
+
+      function buildOrderProgress(status) {
+        const normalized = normalizeOrderStatus(status);
+        const stageIndex = getOrderStageIndex(normalized);
+        const steps = ["Commande reçue", "Paiement reçu", "Livraison en cours", "Dans la boîte"];
+
+        return `
+          <div class="order-progress">
+            ${steps
+              .map((label, index) => {
+                const stepClass =
+                  normalized !== "canceled" && index < stageIndex
+                    ? "complete"
+                    : normalized !== "canceled" && index === stageIndex
+                      ? "active"
+                      : "";
+
+                return `
+                  <div class="order-progress-step ${stepClass}">
+                    <div class="order-progress-dot"></div>
+                    <div class="order-progress-label">${label}</div>
+                  </div>
+                `;
+              })
+              .join("")}
+          </div>
+        `;
+      }
+
+      function openOrdersModal() {
+        if (!authUser) {
+          openModal({
+            title: "Commandes",
+            copy: "Connecte-toi pour voir ton suivi.",
+            view: "orders",
+            body: `
+              <div class="order-modal-stack">
+                <div class="checkout-card">
+                  <div class="legal-title">Compte requis</div>
+                  <p class="checkout-note">Le suivi commande apparait seulement sur un compte connecté.</p>
+                </div>
+                <div class="modal-actions">
+                  <button class="soft-button" type="button" id="modal-close-inline">Fermer</button>
+                </div>
+              </div>
+            `,
+          });
+          return;
+        }
+
+        if (!clientOrdersLoaded) {
+          openModal({
+            title: "Commandes",
+            copy: "Chargement du suivi",
+            view: "orders",
+            body: `
+              <div class="checkout-loading">
+                <div class="checkout-loader" aria-hidden="true"></div>
+                <div class="checkout-flow">
+                  <strong>On récupère tes commandes</strong>
+                  <p class="checkout-note">Un instant…</p>
+                </div>
+              </div>
+            `,
+          });
+          return;
+        }
+
+        if (!clientOrders.length) {
+          openModal({
+            title: "Commandes",
+            copy: "Aucune commande pour le moment",
+            view: "orders",
+            body: `
+              <div class="order-modal-stack">
+                <div class="checkout-card">
+                  <div class="legal-title">Rien à suivre</div>
+                  <p class="checkout-note">Quand une commande sera créée, elle apparaitra ici avec son chemin de livraison.</p>
+                </div>
+                <div class="modal-actions">
+                  <button class="soft-button" type="button" id="modal-close-inline">Fermer</button>
+                </div>
+              </div>
+            `,
+          });
+          return;
+        }
+
+        openModal({
+          title: "Commandes",
+          copy: "Suivi client en direct",
+          view: "orders",
+          body: `
+            <div class="order-modal-stack">
+              ${clientOrders
+                .map((order) => {
+                  const status = normalizeOrderStatus(order.status);
+                  const items = Array.isArray(order.items) ? order.items : [];
+                  const feedback =
+                    clientOrderFeedback.orderId === order.id && clientOrderFeedback.message
+                      ? `<div class="order-alert ${clientOrderFeedback.tone || "success"}">${escapeHtml(clientOrderFeedback.message)}</div>`
+                      : "";
+
+                  return `
+                    <div class="order-modal-card">
+                      <div class="order-modal-head">
+                        <div class="order-modal-title">
+                          <div class="legal-title">Commande ${escapeHtml(order.id)}</div>
+                          <strong>${escapeHtml(formatDateTime(order.createdAt))}</strong>
+                        </div>
+                        <div class="order-status-badge ${status}">${getOrderStatusLabel(status)}</div>
+                      </div>
+
+                      <div class="order-modal-summary">
+                        <div>
+                          <div class="legal-title">Total</div>
+                          <div class="order-modal-total">${formatPrice(Number(order.amount) || 0)}</div>
+                        </div>
+                        <div class="tiny">${items.reduce((sum, item) => sum + (Number(item.qty) || 0), 0)} article(s)</div>
+                      </div>
+
+                      ${buildOrderProgress(status)}
+
+                      ${
+                        status === "canceled"
+                          ? '<div class="order-alert error">Cette commande a ete annulee.</div>'
+                          : ""
+                      }
+
+                      <div class="order-items-stack">
+                        ${items
+                          .map(
+                            (item) => `
+                              <div class="order-item-row">
+                                <div class="order-item-thumb">
+                                  <img src="${escapeHtml(item.image || "")}" alt="${escapeHtml(item.name || "Produit")}" loading="lazy" onerror="this.style.display='none'" />
+                                  <div class="order-item-fallback">${escapeHtml(getOrderItemInitials(item.name || "Produit"))}</div>
+                                </div>
+                                <div class="order-item-copy">
+                                  <strong>${escapeHtml(item.name || "Produit")}</strong>
+                                  <span>${escapeHtml(item.optionLabel || "Format unique")}</span>
+                                  <span>Qt ${escapeHtml(item.qty || 1)}</span>
+                                </div>
+                                <div class="order-item-total">${formatPrice(Number(item.totalPrice) || 0)}</div>
+                              </div>
+                            `
+                          )
+                          .join("")}
+                      </div>
+
+                      ${feedback}
+
+                      <div class="order-modal-actions">
+                        <button class="soft-button" type="button" id="modal-close-inline">Fermer</button>
+                        ${
+                          isOrderCancelable(status)
+                            ? `<button class="cta-button" type="button" data-cancel-order="${escapeHtml(order.id)}">Annuler</button>`
+                            : `<button class="soft-button" type="button" disabled>${status === "done" ? "Reçue" : status === "shipped" ? "En cours" : "Verrouillée"}</button>`
+                        }
+                      </div>
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          `,
+        });
+      }
+
+      async function cancelClientOrder(orderId) {
+        if (!firestore || !authUser || !orderId) {
+          return;
+        }
+
+        clientOrderFeedback = { orderId, message: "Annulation en cours...", tone: "success" };
+        openOrdersModal();
+
+        try {
+          await firestore
+            .collection("orders")
+            .doc(orderId)
+            .set(
+              {
+                status: "canceled",
+                canceledAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+              },
+              { merge: true }
+            );
+          clientOrderFeedback = { orderId, message: "Commande annulée.", tone: "error" };
+          openOrdersModal();
+        } catch (error) {
+          clientOrderFeedback = {
+            orderId,
+            message: error instanceof Error ? error.message : "Annulation impossible pour le moment.",
+            tone: "error",
+          };
+          openOrdersModal();
+        }
       }
 
       function getOrderLines() {
@@ -5689,12 +6284,13 @@
         });
       }
 
-      function openModal({ title, copy = "", body = "", locked = false }) {
+      function openModal({ title, copy = "", body = "", locked = false, view = "" }) {
         modalTitle.textContent = title;
         modalCopy.textContent = copy;
         modalCopy.style.display = copy ? "block" : "none";
         modalBody.innerHTML = body;
         modal.dataset.locked = locked ? "true" : "false";
+        modal.dataset.view = view;
         modalClose.hidden = locked;
         modalClose.disabled = locked;
         modalCard.scrollTop = 0;
@@ -5710,6 +6306,7 @@
         modal.classList.remove("open");
         modal.setAttribute("aria-hidden", "true");
         modal.dataset.locked = "false";
+        modal.dataset.view = "";
         modalClose.hidden = false;
         modalClose.disabled = false;
         modalOpen = false;
@@ -6123,9 +6720,17 @@
           renderProfile();
 
           if (!user) {
+            if (unsubscribeUserOrders) {
+              unsubscribeUserOrders();
+              unsubscribeUserOrders = null;
+            }
+            clientOrders = [];
+            clientOrdersLoaded = false;
+            clientOrderFeedback = { orderId: "", message: "", tone: "" };
             authPassword.value = "";
             setAuthMode("signin");
             showAuthShell();
+            renderOrdersSetting();
             return;
           }
 
@@ -6149,6 +6754,8 @@
           } catch (error) {
             console.error("Profile sync error", error);
           }
+
+          listenClientOrders(user);
 
           setAuthMessage("");
           showAppShell();
@@ -6389,6 +6996,8 @@
         openCheckoutModal();
       });
 
+      ordersButton.addEventListener("click", openOrdersModal);
+
       legalButton.addEventListener("click", openLegalModal);
 
       cookieButton.addEventListener("click", () => {
@@ -6441,6 +7050,12 @@
 
         if (event.target.closest("[data-open-revolut]")) {
           launchRevolutCheckout();
+          return;
+        }
+
+        const cancelOrderButton = event.target.closest("[data-cancel-order]");
+        if (cancelOrderButton) {
+          cancelClientOrder(cancelOrderButton.dataset.cancelOrder);
           return;
         }
 
