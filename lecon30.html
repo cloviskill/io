@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Lecon 30</title>
+    <link rel="stylesheet" href="lesson.css" />
+  </head>
+  <body data-lesson-number="30">
+    <div class="shell">
+      <section class="card hero">
+        <div class="hero-top">
+          <div>
+            <div class="kicker">Mission 30</div>
+            <h1>Diagnostic expert</h1>
+            <p class="copy">Le niveau expert n'est pas d'avoir un appareil pour chaque souci. C'est de savoir relier un symptome a une cause probable: derive de solution, chaleur, oxygene, pompe, buse, debit ou encrassement. Tu fermes le parcours ici.</p>
+          </div>
+          <div class="hero-badge" id="lesson-progress-label">10/10</div>
+        </div>
+        <div class="hero-tags">
+          <span class="pill">Expert</span>
+          <span class="pill">10 min</span>
+          <span class="pill" id="lesson-next-label">Fin</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <small>Objectif</small>
+          <h2>Assembler les indices justes</h2>
+        </div>
+        <div class="fact-grid">
+          <div class="fact-card">
+            <strong>Symptome</strong>
+            <p>Feuilles ternes, absorption qui ralentit, odeur changeante, racines qui foncent: le symptome est ton point d'entree, pas ta conclusion.</p>
+          </div>
+          <div class="fact-card">
+            <strong>Contexte</strong>
+            <p>Un meme symptome n'a pas le meme sens si le reservoir chauffe, si le pH derive ou si une buse est a moitie bouchee.</p>
+          </div>
+          <div class="fact-card">
+            <strong>Priorite</strong>
+            <p>Le bon diagnostic hiérarchise. On traite d'abord ce qui menace la zone racinaire et la continuite du systeme.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <small>Sequence</small>
+          <h2>Procedure de lecture rapide</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-index">1</div>
+            <div><strong>Regarde l'etat du vivant</strong><p>Feuillage, posture, couleur, mais aussi racines, odeur et tonus general du systeme.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-index">2</div>
+            <div><strong>Controle le circuit</strong><p>Pompe, debit, bullage, buses, retour, niveau et temperature te disent vite si le probleme est mecanique ou nutritif.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-index">3</div>
+            <div><strong>Relis les mesures a l'historique</strong><p>Une valeur n'a d'interet que si tu sais si elle monte, descend ou decroche plus vite que d'habitude.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-index">4</div>
+            <div><strong>Corrige par ordre de gravite</strong><p>Assure d'abord la survie et la stabilite, puis affine. On sauve le systeme avant de polir les chiffres.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="list-grid">
+        <section class="card list-card">
+          <div class="section-title">
+            <small>A garder</small>
+            <h2>Reflexes d'expert</h2>
+          </div>
+          <ul>
+            <li>Reunir plusieurs indices avant de conclure.</li>
+            <li>Traiter la cause systemique avant le symptome visible.</li>
+            <li>Revenir ensuite a une solution simple et stable.</li>
+          </ul>
+        </section>
+
+        <section class="card list-card">
+          <div class="section-title">
+            <small>A eviter</small>
+            <h2>Erreurs terminales</h2>
+          </div>
+          <ul>
+            <li>Ajouter des produits sans comprendre la panne.</li>
+            <li>Corriger plusieurs variables a la fois.</li>
+            <li>Ignorer le materiel pour ne regarder que la nutrition.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="card note-card">
+        <div class="section-title">
+          <small>Micro mission</small>
+          <h2>Checklist</h2>
+        </div>
+        <ul class="check-list">
+          <li>Je pars du symptome sans m'y enfermer <span>trop vite</span></li>
+          <li>Je controle le vivant et le circuit <span>dans le meme passage</span></li>
+          <li>Je regarde l'historique des derives <span>pas seulement la valeur du moment</span></li>
+          <li>Je corrige par ordre de gravite <span>avant de peaufiner</span></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <small>Validation</small>
+          <h2>Clore le chapitre 3</h2>
+        </div>
+        <p class="copy">Valide quand tu sais diagnostiquer un systeme hydro ou aero avec methode, calme et priorisation. Tu termines ici le chapitre 3 et l'ensemble du parcours de l'application.</p>
+        <div class="actions">
+          <button class="button" id="complete-button" type="button">Valider la mission</button>
+          <a class="link" href="index.html?section=3">Retour au chemin</a>
+        </div>
+        <div class="status" id="status"></div>
+      </section>
+    </div>
+    <script src="lesson.js"></script>
+  </body>
+</html>
