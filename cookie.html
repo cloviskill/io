@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Cookie AI - Expert Plantes</title>
+    <style>
+        :root {
+            --bg: #F9FAFB;
+            --surface: #FFFFFF;
+            --ink: #111827;
+            --ink-light: #6B7280;
+            --msg-bot: #F3F4F6;
+            --msg-user: #111827;
+            --accent: #D97706; /* Cookie color */
+            --border: #E5E7EB;
+            --radius: 28px;
+            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; }
+        body { background: var(--bg); display: flex; justify-content: center; min-height: 100vh; min-height: 100dvh; overflow: hidden; color: var(--ink); font-smoothing: antialiased; -webkit-font-smoothing: antialiased; touch-action: manipulation; }
+        #app { width: 100%; max-width: 480px; background: var(--surface); display: flex; flex-direction: column; height: 100%; min-height: 0; position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
+        @media (min-width: 481px) { #app { height: 96vh; margin-top: 2vh; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); } }
+        
+        /* Cookie Logo SVG */
+        .cookie-svg { width: 24px; height: 24px; fill: #D97706; }
+        .cookie-chip { fill: #78350F; }
+        
+        /* Header */
+        header { flex: 0 0 auto; padding: calc(16px + env(safe-area-inset-top)) 16px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.03); background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .btn-back { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #F3F4F6; color: var(--ink); text-decoration: none; transition: background 0.2s; }
+        .btn-back:active { background: #E5E7EB; }
+        .btn-back svg { width: 20px; height: 20px; }
+        .logo { font-weight: 800; font-size: 20px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; color: var(--ink); }
+        .restart { background: #F3F4F6; border: none; color: var(--ink); font-weight: 600; font-size: 13px; padding: 8px 16px; border-radius: 99px; cursor: pointer; transition: background 0.2s; }
+        .restart:active { background: #E5E7EB; }
+        
+        /* Start Menu */
+        #start-menu { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom)); text-align: center; background: var(--surface); z-index: 20; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .cookie-svg-large { width: 96px; height: 96px; fill: var(--accent); margin-bottom: 24px; filter: drop-shadow(0 10px 20px rgba(217, 119, 6, 0.2)); }
+        .start-title { font-size: 32px; font-weight: 800; color: var(--ink); margin-bottom: 16px; letter-spacing: -1px; }
+        .start-desc { font-size: 17px; color: var(--ink-light); line-height: 1.5; margin-bottom: 48px; max-width: 300px; }
+        .btn-start { background: var(--accent); color: #fff; border: none; padding: 18px 36px; border-radius: 99px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 8px 25px rgba(217, 119, 6, 0.3); width: 100%; max-width: 280px; }
+        .btn-start:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(217, 119, 6, 0.2); }
+        
+        /* Chat */
+        #chat { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 20px 16px 16px; display: none; flex-direction: column; gap: 20px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+        .msg { max-width: 88%; padding: 14px 18px; font-size: 16px; line-height: 1.5; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(12px); letter-spacing: -0.2px; }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        .bot { background: var(--msg-bot); color: var(--ink); border-radius: 24px 24px 24px 8px; align-self: flex-start; }
+        .user { background: var(--msg-user); color: #fff; border-radius: 24px 24px 8px 24px; align-self: flex-end; font-weight: 500; }
+        .sys { align-self: center; font-size: 13px; color: var(--ink-light); text-align: center; max-width: 90%; font-weight: 500; }
+        
+        /* Typing Cookie */
+        .typing { display: flex; gap: 8px; padding: 16px 20px; background: var(--msg-bot); border-radius: 24px 24px 24px 8px; align-self: flex-start; width: fit-content; align-items: center; }
+        .typing-cookie { width: 20px; height: 20px; fill: #D97706; animation: spinCookie 2s linear infinite; }
+        @keyframes spinCookie { 100% { transform: rotate(360deg); } }
+        .typing-text { font-size: 14px; color: var(--ink-light); font-weight: 500; }
+
+        /* Controls */
+        #controls { flex: 0 0 auto; max-height: min(42dvh, 360px); overflow-y: auto; padding: 12px 16px calc(18px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid rgba(0,0,0,0.03); display: none; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+        .opt-btn { width: 100%; min-height: 56px; background: var(--surface); border: 1.5px solid var(--border); color: var(--ink); padding: 16px 18px; border-radius: 20px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; line-height: 1.35; letter-spacing: -0.2px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .opt-btn::after { content: '→'; opacity: 0; transform: translateX(-10px); transition: all 0.2s; color: var(--ink-light); }
+        .opt-btn:hover { border-color: var(--ink); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .opt-btn:hover::after { opacity: 1; transform: translateX(0); }
+        .opt-btn:active { transform: scale(0.97); background: var(--bg); }
+        
+        /* Image Card */
+        .img-card { background: var(--surface); border-radius: 20px; overflow: hidden; margin-top: 12px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .img-card img { width: 100%; height: clamp(180px, 52vw, 220px); object-fit: cover; background: #eee; }
+        .img-actions { padding: 12px; display: flex; gap: 8px; }
+        .btn-see-all { flex: 1; background: var(--bg); border: none; padding: 12px; border-radius: 16px; font-weight: 600; font-size: 15px; cursor: pointer; color: var(--ink); transition: background 0.2s; }
+        .btn-see-all:active { background: #E5E7EB; }
+        
+        /* Gallery Modal (Tinder Style) */
+        #gallery { position: absolute; inset: 0; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        #gallery.active { display: flex; opacity: 1; }
+        .gal-header { flex: 0 0 auto; padding: calc(16px + env(safe-area-inset-top)) 16px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .gal-title { font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
+        .btn-close { background: #F3F4F6; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; cursor: pointer; display: grid; place-items: center; color: var(--ink); transition: background 0.2s; }
+        .btn-close:active { background: #E5E7EB; }
+        
+        .gal-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px 16px 8px; position: relative; overflow: hidden; }
+        
+        .gal-card { position: absolute; width: min(100%, 360px); max-width: 360px; background: var(--surface); border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s; opacity: 0; pointer-events: none; transform: scale(0.95); }
+        .gal-card.active { opacity: 1; pointer-events: auto; transform: scale(1) translateX(0); z-index: 2; }
+        .gal-card.prev { opacity: 0; transform: scale(0.9) translateX(-100%); z-index: 1; }
+        .gal-card.next { opacity: 0; transform: scale(0.9) translateX(100%); z-index: 1; }
+        
+        .gal-card img { width: 100%; height: clamp(220px, 42vh, 320px); object-fit: cover; display: block; }
+        .gal-info { padding: 20px; text-align: center; }
+        .gal-desc { font-size: 16px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+        
+        .gal-controls { flex: 0 0 auto; display: flex; justify-content: center; gap: 18px; padding: 18px 16px calc(24px + env(safe-area-inset-bottom)); }
+        .btn-swipe { width: 60px; height: 60px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.08); background: #fff; }
+        .btn-swipe:active { transform: scale(0.9); }
+        .btn-swipe.no { color: #EF4444; border: 2px solid #FCA5A5; }
+        .btn-swipe.yes { color: #10B981; border: 2px solid #6EE7B7; }
+        .btn-swipe svg { width: 32px; height: 32px; stroke-width: 2.5; }
+
+        /* Diagnosis Card */
+        .diag-card { background: var(--surface); border: 2px solid var(--ink); border-radius: 24px; padding: 24px; margin-top: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; }
+        .diag-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .diag-score { display: inline-block; background: var(--ink); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .diag-sec { margin-bottom: 20px; }
+        .diag-sec h4 { font-size: 14px; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 700; }
+        .diag-sec p, .diag-sec ul { font-size: 16px; line-height: 1.6; color: var(--ink); }
+        .diag-sec ul { padding-left: 20px; }
+        .diag-sec li { margin-bottom: 4px; }
+        .diag-warn { background: #FEF2F2; color: #991B1B; padding: 16px; border-radius: 16px; font-size: 15px; line-height: 1.5; border: 1px solid #FCA5A5; }
+        .diag-warn strong { display: block; margin-bottom: 6px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        @media (max-width: 390px) {
+            .start-title { font-size: 28px; }
+            .start-desc { font-size: 16px; margin-bottom: 32px; }
+            .logo { font-size: 18px; }
+            .restart { padding: 8px 12px; font-size: 12px; }
+            .msg { max-width: 92%; font-size: 15px; padding: 13px 16px; }
+            .opt-btn { font-size: 15px; padding: 15px 16px; }
+            .diag-card { padding: 18px; }
+            .diag-title { font-size: 20px; }
+            .diag-sec p, .diag-sec ul { font-size: 15px; }
+        }
+
+        @media (max-height: 760px) {
+            #start-menu { justify-content: flex-start; }
+            .cookie-svg-large { width: 76px; height: 76px; margin-bottom: 18px; }
+            .start-title { margin-bottom: 10px; }
+            .start-desc { margin-bottom: 28px; }
+            #chat { padding: 16px 14px 12px; gap: 16px; }
+            #controls { max-height: min(48dvh, 320px); padding: 10px 14px calc(16px + env(safe-area-inset-bottom)); }
+            .gal-card img { height: clamp(180px, 34vh, 260px); }
+            .gal-info { padding: 16px; }
+            .gal-controls { padding-top: 12px; gap: 14px; }
+            .btn-swipe { width: 54px; height: 54px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="start-menu">
+        <svg class="cookie-svg-large" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15c-.83 0-1.5-.67-1.5-1.5S9.17 14 10 14s1.5.67 1.5 1.5S10.83 17 10 17zm4-4c-.83 0-1.5-.67-1.5-1.5S13.17 10 14 10s1.5.67 1.5 1.5S14.83 13 14 13zm-6-3c-.83 0-1.5-.67-1.5-1.5S7.17 7 8 7s1.5.67 1.5 1.5S8.83 10 8 10z" />
+            <circle class="cookie-chip" cx="10" cy="15.5" r="1.5"/>
+            <circle class="cookie-chip" cx="14" cy="11.5" r="1.5"/>
+            <circle class="cookie-chip" cx="8" cy="8.5" r="1.5"/>
+            <circle class="cookie-chip" cx="16" cy="16" r="1"/>
+            <circle class="cookie-chip" cx="12" cy="7" r="1"/>
+        </svg>
+        <h1 class="start-title">Cookie AI</h1>
+        <p class="start-desc">Ton expert en plantes personnel. Prêt à diagnostiquer tes problèmes de jardinage ?</p>
+        <button class="btn-start" onclick="startChat()">Lancer Cookie</button>
+    </div>
+
+    <header id="main-header">
+        <div class="header-left">
+            <a href="index.html" class="btn-back" title="Retour au menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </a>
+            <div class="logo">
+                <svg class="cookie-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15c-.83 0-1.5-.67-1.5-1.5S9.17 14 10 14s1.5.67 1.5 1.5S10.83 17 10 17zm4-4c-.83 0-1.5-.67-1.5-1.5S13.17 10 14 10s1.5.67 1.5 1.5S14.83 13 14 13zm-6-3c-.83 0-1.5-.67-1.5-1.5S7.17 7 8 7s1.5.67 1.5 1.5S8.83 10 8 10z" />
+                    <circle class="cookie-chip" cx="10" cy="15.5" r="1.5"/>
+                    <circle class="cookie-chip" cx="14" cy="11.5" r="1.5"/>
+                    <circle class="cookie-chip" cx="8" cy="8.5" r="1.5"/>
+                    <circle class="cookie-chip" cx="16" cy="16" r="1"/>
+                    <circle class="cookie-chip" cx="12" cy="7" r="1"/>
+                </svg>
+                Cookie AI
+            </div>
+        </div>
+        <button class="restart" onclick="reset()">Recommencer</button>
+    </header>
+    
+    <div id="chat"></div>
+    <div id="controls"></div>
+
+    <div id="gallery">
+        <div class="gal-header">
+            <div class="gal-title">Est-ce que ça ressemble à ça ?</div>
+            <button class="btn-close" onclick="closeGallery()">×</button>
+        </div>
+        <div class="gal-content" id="gal-content">
+            <!-- Cards will be injected here -->
+        </div>
+        <div class="gal-controls">
+            <button class="btn-swipe no" onclick="swipeGallery('no')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <button class="btn-swipe yes" onclick="swipeGallery('yes')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- DATA ---
+const diagnoses = {
+    carence_azote: { t: "Carence en Azote", d: "Manque d'azote, essentiel à la croissance.", c: ["Substrat épuisé", "Sous-fertilisation"], a: ["Engrais riche en azote", "Ajuster pH"], w: "Ne pas surdoser l'engrais." },
+    exces_azote: { t: "Excès d'Azote", d: "Trop d'azote bloque d'autres nutriments.", c: ["Sur-fertilisation"], a: ["Rincer le substrat à l'eau claire", "Stopper l'engrais"], w: "Éviter l'eau stagnante." },
+    carence_phosphore: { t: "Carence en Phosphore", d: "Manque de phosphore pour les racines.", c: ["Froid", "pH inadapté"], a: ["Augmenter température", "Engrais P"], w: "Attention aux faux positifs liés au froid." },
+    carence_potassium: { t: "Carence en Potassium", d: "Manque de potassium (régulation eau).", c: ["Antagonisme Ca/Mg", "Sous-fertilisation"], a: ["Supplément K"], w: "Les bords brûlés ne guériront pas." },
+    carence_magnesium: { t: "Carence en Magnésium", d: "Chlorose internervaire typique.", c: ["pH acide", "Substrat pauvre"], a: ["Sel d'Epsom foliaire", "Ajuster pH"], w: "Ne pas bloquer le calcium." },
+    carence_fer: { t: "Carence en Fer", d: "Jeunes pousses jaunes.", c: ["pH alcalin", "Asphyxie racinaire"], a: ["Abaisser pH", "Fer chélaté"], w: "Régler le pH d'abord." },
+    carence_calcium: { t: "Carence en Calcium", d: "Déformation des jeunes feuilles, nécroses apicales.", c: ["Arrosage irrégulier", "pH inadapté"], a: ["Apport de calcium", "Régulariser l'arrosage"], w: "Le calcium est peu mobile dans la plante." },
+    sur_arrosage: { t: "Sur-arrosage", d: "Asphyxie des racines.", c: ["Arrosages fréquents", "Mauvais drainage"], a: ["Stopper arrosage", "Vérifier racines", "Rempoter si nécessaire"], w: "Pas d'engrais !" },
+    sous_arrosage: { t: "Sous-arrosage", d: "Stress hydrique sévère.", c: ["Oubli", "Terreau hydrophobe"], a: ["Bassiner le pot 30 min"], w: "Ne pas laisser tremper des jours." },
+    pourriture_racines: { t: "Pourriture des racines", d: "Racines brunes, molles et malodorantes.", c: ["Sur-arrosage prolongé", "Champignons (Pythium, Phytophthora)"], a: ["Couper racines mortes", "Rempoter dans terreau sain", "Fongicide"], w: "Souvent fatal si pris trop tard." },
+    ravageurs_acariens: { t: "Acariens (Araignées rouges)", d: "Minuscules araignées suceuses de sève.", c: ["Air sec", "Chaleur"], a: ["Doucher le feuillage", "Huile de neem", "Augmenter l'humidité"], w: "Insecticides classiques inefficaces." },
+    pucerons: { t: "Pucerons", d: "Insectes piqueurs, miellat collant.", c: ["Printemps", "Excès d'azote"], a: ["Savon noir", "Coccinelles"], w: "Traiter aussi sous les feuilles." },
+    cochenilles: { t: "Cochenilles", d: "Amas blancs cotonneux ou carapaces.", c: ["Air confiné", "Contamination"], a: ["Alcool à 70° sur coton", "Savon noir"], w: "Très tenaces, isoler la plante." },
+    thrips: { t: "Thrips", d: "Petits insectes allongés, taches argentées sur les feuilles.", c: ["Air sec", "Chaleur"], a: ["Pièges bleus", "Savon noir", "Huile de neem"], w: "Se cachent dans les fleurs et bourgeons." },
+    mouches_terreau: { t: "Mouches du terreau (Sciarides)", d: "Petites mouches noires autour du pot.", c: ["Terreau constamment humide"], a: ["Laisser sécher la surface", "Nématodes", "Sable en surface"], w: "Les larves mangent les jeunes racines." },
+    oidium: { t: "Oïdium", d: "Maladie fongique (feutrage blanc).", c: ["Humidité + chaleur", "Mauvaise aération"], a: ["Couper feuilles très atteintes", "Soufre ou lait dilué"], w: "Ne pas mouiller le feuillage." },
+    mildiou: { t: "Mildiou", d: "Taches brunes/jaunes sur le dessus, duvet blanc dessous.", c: ["Humidité élevée", "Feuillage mouillé"], a: ["Bouillie bordelaise", "Aérer la plante"], w: "Se propage très vite." },
+    rouille: { t: "Rouille", d: "Pustules orange/brunes sous les feuilles.", c: ["Humidité", "Chaleur modérée"], a: ["Couper parties atteintes", "Fongicide"], w: "Ramasser les feuilles mortes." },
+    manque_lumiere: { t: "Manque de lumière", d: "La plante s'étiole pour chercher le soleil.", c: ["Emplacement trop sombre"], a: ["Rapprocher d'une fenêtre", "Lampe horticole"], w: "Acclimater progressivement à la lumière." },
+    brulure_soleil: { t: "Brûlure solaire", d: "Tissus détruits par les UV/chaleur.", c: ["Soleil direct soudain"], a: ["Éloigner de la vitre", "Voilage"], w: "Les taches sèches sont irréversibles." },
+    choc_thermique: { t: "Choc thermique", d: "Chute soudaine des feuilles ou flétrissement.", c: ["Courant d'air froid", "Changement brusque de place"], a: ["Placer dans un endroit stable"], w: "Éviter la proximité des radiateurs/clims." },
+    air_trop_sec: { t: "Air trop sec", d: "Bords des feuilles secs et bruns.", c: ["Chauffage en hiver", "Climatisation"], a: ["Brumiser", "Humidificateur", "Coupelle d'eau avec billes d'argile"], w: "Certaines plantes tropicales sont très sensibles." }
+};
+
+const imagesData = [
+    { id: 'image1.png', diag: 'carence_azote', desc: 'Jaunissement généralisé, commençant par le bas.' },
+    { id: 'image2.png', diag: 'exces_azote', desc: 'Feuilles vert très foncé, presque bleuté, recroquevillées.' },
+    { id: 'image3.png', diag: 'carence_phosphore', desc: 'Tiges et feuilles avec des teintes pourpres/violacées.' },
+    { id: 'image4.png', diag: 'carence_potassium', desc: 'Bords des feuilles jaunis puis brûlés (nécroses).' },
+    { id: 'image5.png', diag: 'carence_magnesium', desc: 'Jaunissement entre les nervures qui restent bien vertes.' },
+    { id: 'image6.png', diag: 'carence_fer', desc: 'Jeunes pousses très claires, presque blanches.' },
+    { id: 'image7.png', diag: 'carence_calcium', desc: 'Jeunes feuilles déformées, bords nécrosés.' },
+    { id: 'image8.png', diag: 'oidium', desc: 'Poudre blanche ou grisâtre sur le dessus des feuilles.' },
+    { id: 'image9.png', diag: 'mildiou', desc: 'Taches brunes sur le dessus, duvet blanc en dessous.' },
+    { id: 'image10.png', diag: 'rouille', desc: 'Pustules orange ou brunes sous les feuilles.' },
+    { id: 'image11.png', diag: 'pucerons', desc: 'Petits insectes verts/noirs agglutinés sur les tiges.' },
+    { id: 'image12.png', diag: 'cochenilles', desc: 'Petits amas blancs ressemblant à du coton.' },
+    { id: 'image13.png', diag: 'thrips', desc: 'Taches argentées et petits points noirs (excréments).' },
+    { id: 'image14.png', diag: 'mouches_terreau', desc: 'Petites mouches noires volant autour de la terre.' },
+    { id: 'image15.png', diag: 'brulure_soleil', desc: 'Grandes taches blanches ou brunes, sèches au toucher.' },
+    { id: 'image16.png', diag: 'air_trop_sec', desc: 'Bords et pointes des feuilles secs et craquants.' },
+    { id: 'image17.png', diag: 'pourriture_racines', desc: 'Base de la tige molle et brune, terreau détrempé.' },
+    { id: 'image18.png', diag: 'ravageurs_acariens', desc: 'Minuscules points (rouges/jaunes) et fines toiles.' },
+    { id: 'image19.png', diag: 'sous_arrosage', desc: 'Plante molle, feuilles tombantes, terreau très sec.' },
+    { id: 'image20.png', diag: 'sur_arrosage', desc: 'Feuilles jaunes et molles, terreau détrempé.' },
+    { id: 'image21.png', diag: 'manque_lumiere', desc: 'Tiges longues et fines, feuilles espacées et pâles.' },
+    { id: 'image22.png', diag: 'choc_thermique', desc: 'Chute soudaine des feuilles, flétrissement rapide.' },
+    { id: 'image23.png', diag: 'inconnu1', desc: 'Symptôme non identifié 1.' },
+    { id: 'image24.png', diag: 'inconnu2', desc: 'Symptôme non identifié 2.' },
+    { id: 'image25.png', diag: 'inconnu3', desc: 'Symptôme non identifié 3.' }
+];
+
+const questions = [
+    {
+        id: 'q_start',
+        text: "Salut ! Je suis Cookie AI, ton expert en plantes. Quel est le symptôme principal que tu observes sur ta plante ?",
+        options: [
+            { t: "Problème de couleur (jaune, pâle, sombre, taches)", i: {}, n: 'q_color_type' },
+            { t: "Insectes, toiles ou parasites visibles", i: {}, n: 'q_bugs' },
+            { t: "Plante molle, flétrie, tiges longues ou sèches", i: {}, n: 'q_shape' },
+            { t: "Problème au niveau du terreau ou des racines", i: {}, n: 'q_soil' }
+        ]
+    },
+    {
+        id: 'q_color_type',
+        text: "S'agit-il d'un changement de couleur global ou de taches localisées ?",
+        options: [
+            { t: "Changement de couleur généralisé (jaunissement, pâleur)", i: {}, n: 'q_color_loc' },
+            { t: "Taches, poudre, pustules ou brûlures", i: {}, n: 'q_spots' }
+        ]
+    },
+    {
+        id: 'q_color_loc',
+        text: "Où ce changement de couleur est-il le plus visible ?",
+        options: [
+            { t: "Sur les vieilles feuilles (en bas de la plante)", i: { carence_azote: 2, carence_magnesium: 2, carence_phosphore: 2, carence_potassium: 1 }, n: 'q_color_bottom' },
+            { t: "Sur les jeunes pousses (en haut de la plante)", i: { carence_fer: 3, exces_azote: 2, carence_calcium: 2 }, n: 'q_color_top' },
+            { t: "Partout de manière égale", i: { carence_azote: 1, sur_arrosage: 2, manque_lumiere: 1, choc_thermique: 1 }, n: 'q_water' }
+        ]
+    },
+    {
+        id: 'q_color_bottom',
+        text: "Comment est ce changement de couleur sur les vieilles feuilles ?",
+        options: [
+            { t: "Jaune uniforme, la feuille pâlit entièrement", i: { carence_azote: 4 }, n: 'img_carence_azote' },
+            { t: "Jaune entre les nervures (qui restent bien vertes)", i: { carence_magnesium: 4 }, n: 'img_carence_magnesium' },
+            { t: "Teintes violacées ou pourpres", i: { carence_phosphore: 4 }, n: 'img_carence_phosphore' },
+            { t: "Bords des feuilles jaunis puis brûlés/secs", i: { carence_potassium: 4 }, n: 'img_carence_potassium' }
+        ]
+    },
+    {
+        id: 'q_color_top',
+        text: "Comment sont les jeunes pousses ?",
+        options: [
+            { t: "Jaunes très clair, presque blanches", i: { carence_fer: 4 }, n: 'img_carence_fer' },
+            { t: "Vert extrêmement foncé, feuilles recroquevillées", i: { exces_azote: 4 }, n: 'img_exces_azote' },
+            { t: "Déformées, tordues, avec des bords nécrosés", i: { carence_calcium: 4 }, n: 'img_carence_calcium' }
+        ]
+    },
+    {
+        id: 'q_spots',
+        text: "À quoi ressemblent ces taches ou marques ?",
+        options: [
+            { t: "Poudre blanche ou grisâtre comme de la farine", i: { oidium: 5 }, n: 'img_oidium' },
+            { t: "Taches brunes/jaunes dessus, duvet blanc dessous", i: { mildiou: 5 }, n: 'img_mildiou' },
+            { t: "Petites pustules orange ou brunes sous les feuilles", i: { rouille: 5 }, n: 'img_rouille' },
+            { t: "Grandes plaques sèches, décolorées au centre", i: { brulure_soleil: 4 }, n: 'img_brulure_soleil' },
+            { t: "Taches argentées avec de minuscules points noirs", i: { thrips: 4 }, n: 'img_thrips' }
+        ]
+    },
+    {
+        id: 'q_bugs',
+        text: "Quels types d'indésirables voyez-vous ?",
+        options: [
+            { t: "Minuscules points (rouges/jaunes) + fines toiles", i: { ravageurs_acariens: 5 }, n: 'q_env' },
+            { t: "Petits insectes verts/noirs + substance collante", i: { pucerons: 5 }, n: 'img_pucerons' },
+            { t: "Amas blancs cotonneux ou petites carapaces", i: { cochenilles: 5 }, n: 'img_cochenilles' },
+            { t: "Petits insectes allongés, très vifs", i: { thrips: 4 }, n: 'img_thrips' },
+            { t: "Petites mouches noires autour du terreau", i: { mouches_terreau: 5 }, n: 'img_mouches_terreau' }
+        ]
+    },
+    {
+        id: 'q_shape',
+        text: "Décrivez l'état général de la plante :",
+        options: [
+            { t: "Toute molle, feuilles tombantes et flétries", i: { sous_arrosage: 2, sur_arrosage: 2, pourriture_racines: 1 }, n: 'q_water' },
+            { t: "Tiges très longues, fines, feuilles espacées", i: { manque_lumiere: 4 }, n: 'q_env' },
+            { t: "Bords et pointes des feuilles secs et craquants", i: { air_trop_sec: 4, carence_potassium: 1 }, n: 'img_air_trop_sec' },
+            { t: "Chute soudaine de nombreuses feuilles", i: { choc_thermique: 4, sur_arrosage: 1 }, n: 'q_env' }
+        ]
+    },
+    {
+        id: 'q_soil',
+        text: "Quel est le problème au niveau du terreau ou des racines ?",
+        options: [
+            { t: "Terreau constamment détrempé, odeur de pourri", i: { sur_arrosage: 3, pourriture_racines: 4 }, n: 'img_pourriture_racines' },
+            { t: "Terreau très sec, l'eau coule sur les côtés", i: { sous_arrosage: 4 }, n: 'q_eval' },
+            { t: "Petites mouches qui s'envolent quand on touche", i: { mouches_terreau: 4 }, n: 'img_mouches_terreau' }
+        ]
+    },
+    {
+        id: 'q_water',
+        text: "Comment est le terreau actuellement ?",
+        options: [
+            { t: "Très sec et léger", i: { sous_arrosage: 4, sur_arrosage: -5, pourriture_racines: -5 }, n: 'q_env' },
+            { t: "Détrempé, lourd, sent un peu fort", i: { sur_arrosage: 5, sous_arrosage: -5, pourriture_racines: 3 }, n: 'q_env' },
+            { t: "Légèrement humide, normal", i: {}, n: 'q_env' }
+        ]
+    },
+    {
+        id: 'q_env',
+        text: "Y a-t-il eu un changement récent dans l'environnement de la plante ?",
+        options: [
+            { t: "Déplacement, rempotage ou courant d'air", i: { choc_thermique: 4 }, n: 'q_eval' },
+            { t: "Mise en plein soleil soudaine", i: { brulure_soleil: 3 }, n: 'q_eval' },
+            { t: "Chauffage allumé récemment (air sec)", i: { air_trop_sec: 3, ravageurs_acariens: 2 }, n: 'q_eval' },
+            { t: "Aucun changement particulier", i: {}, n: 'q_eval' }
+        ]
+    },
+    {
+        id: 'q_eval',
+        text: "J'analyse toutes ces données en croisant les symptômes...",
+        options: [
+            { t: "Voir le diagnostic", i: {}, n: 'finish' }
+        ]
+    }
+];
+
+// --- STATE ---
+let state = { scores: {}, step: 'q_start', currentContextDiag: null };
+let galleryIndex = 0;
+
+const chat = document.getElementById('chat');
+const controls = document.getElementById('controls');
+const gallery = document.getElementById('gallery');
+const galContent = document.getElementById('gal-content');
+
+function resetControlsScroll() { controls.scrollTop = 0; }
+
+function showStartMenu() {
+    document.getElementById('start-menu').style.display = 'flex';
+    document.getElementById('main-header').style.display = 'none';
+    chat.style.display = 'none';
+    controls.style.display = 'none';
+}
+
+function startChat() {
+    document.getElementById('start-menu').style.display = 'none';
+    document.getElementById('main-header').style.display = 'flex';
+    chat.style.display = 'flex';
+    controls.style.display = 'flex';
+    
+    Object.keys(diagnoses).forEach(k => state.scores[k] = 0);
+    state.step = 'q_start';
+    chat.innerHTML = '';
+    controls.innerHTML = '';
+    resetControlsScroll();
+    
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        render('q_start');
+    }, 1200);
+}
+
+function reset() { startChat(); }
+
+function scrollToBottom() { chat.scrollTop = chat.scrollHeight; }
+
+function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'typing'; div.id = 'typing';
+    div.innerHTML = `
+        <svg class="typing-cookie" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15c-.83 0-1.5-.67-1.5-1.5S9.17 14 10 14s1.5.67 1.5 1.5S10.83 17 10 17zm4-4c-.83 0-1.5-.67-1.5-1.5S13.17 10 14 10s1.5.67 1.5 1.5S14.83 13 14 13zm-6-3c-.83 0-1.5-.67-1.5-1.5S7.17 7 8 7s1.5.67 1.5 1.5S8.83 10 8 10z" />
+            <circle class="cookie-chip" cx="10" cy="15.5" r="1.5"/>
+            <circle class="cookie-chip" cx="14" cy="11.5" r="1.5"/>
+            <circle class="cookie-chip" cx="8" cy="8.5" r="1.5"/>
+            <circle class="cookie-chip" cx="16" cy="16" r="1"/>
+            <circle class="cookie-chip" cx="12" cy="7" r="1"/>
+        </svg>
+        <span class="typing-text">Cookie réfléchit...</span>
+    `;
+    chat.appendChild(div); scrollToBottom();
+}
+function hideTyping() { const t = document.getElementById('typing'); if(t) t.remove(); }
+
+function addBot(text) {
+    const div = document.createElement('div'); div.className = 'msg bot'; div.innerHTML = text;
+    chat.appendChild(div); scrollToBottom();
+}
+function addUser(text) {
+    const div = document.createElement('div'); div.className = 'msg user'; div.innerText = text;
+    chat.appendChild(div); scrollToBottom();
+}
+function addSys(text) {
+    const div = document.createElement('div'); div.className = 'msg sys'; div.innerText = text;
+    chat.appendChild(div); scrollToBottom();
+}
+
+function handleAns(opt) {
+    controls.innerHTML = '';
+    resetControlsScroll();
+    addUser(opt.t);
+    if (opt.i) {
+        for (const [k, v] of Object.entries(opt.i)) state.scores[k] += v;
+    }
+    showTyping();
+    
+    // Add some reflection
+    const reflections = ["Je note ce détail.", "C'est une information cruciale.", "Laissez-moi ajuster mes paramètres...", "Intéressant.", "Je vois."];
+    setTimeout(() => {
+        hideTyping();
+        if(Math.random() > 0.5 && opt.n !== 'finish') addSys(reflections[Math.floor(Math.random() * reflections.length)]);
+        setTimeout(() => render(opt.n), 400);
+    }, 800);
+}
+
+function render(stepId) {
+    if (stepId === 'finish') return finish();
+    if (stepId.startsWith('img_')) return renderImg(stepId.replace('img_', ''));
+
+    const q = questions.find(x => x.id === stepId);
+    if (!q) return finish();
+
+    addBot(q.text);
+    controls.innerHTML = '';
+    resetControlsScroll();
+    q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn'; btn.innerText = opt.t;
+        btn.onclick = () => handleAns(opt);
+        controls.appendChild(btn);
+    });
+}
+
+function renderImg(diagId) {
+    state.currentContextDiag = diagId;
+    const img = imagesData.find(i => i.diag === diagId);
+    if (!img) return render('q_eval');
+
+    const html = `
+        Voici une image de référence pour ce symptôme :
+        <div class="img-card">
+            <img src="${img.id}" alt="Ref">
+            <div class="img-actions">
+                <button class="btn-see-all" onclick="openGallery()">Explorer les images</button>
+            </div>
+        </div>
+        Est-ce que cela ressemble à votre plante ?
+    `;
+    addBot(html);
+    
+    controls.innerHTML = '';
+    resetControlsScroll();
+    const opts = [
+        { t: "Oui, c'est exactement ça", val: 5 },
+        { t: "Ça y ressemble un peu", val: 2 },
+        { t: "Non, pas du tout", val: -5 }
+    ];
+    
+    opts.forEach(o => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn'; btn.innerText = o.t;
+        btn.onclick = () => {
+            controls.innerHTML = '';
+            addUser(o.t);
+            state.scores[diagId] += o.val;
+            showTyping();
+            setTimeout(() => { hideTyping(); render('q_water'); }, 1000);
+        };
+        controls.appendChild(btn);
+    });
+}
+
+function openGallery() {
+    galleryIndex = 0;
+    renderGalleryCards();
+    gallery.classList.add('active');
+}
+
+function renderGalleryCards() {
+    galContent.innerHTML = '';
+    imagesData.forEach((img, idx) => {
+        const div = document.createElement('div');
+        div.className = `gal-card ${idx === galleryIndex ? 'active' : (idx < galleryIndex ? 'prev' : 'next')}`;
+        div.id = `gal-card-${idx}`;
+        div.innerHTML = `
+            <img src="${img.id}" alt="Symptom">
+            <div class="gal-info">
+                <div class="gal-desc">${img.desc}</div>
+            </div>
+        `;
+        galContent.appendChild(div);
+    });
+}
+
+function swipeGallery(action) {
+    const currentImg = imagesData[galleryIndex];
+    
+    if (action === 'yes') {
+        selectFromGallery(currentImg.diag);
+        return;
+    }
+    
+    // Action 'no'
+    if (galleryIndex < imagesData.length - 1) {
+        const currentCard = document.getElementById(`gal-card-${galleryIndex}`);
+        currentCard.classList.remove('active');
+        currentCard.classList.add('prev');
+        
+        galleryIndex++;
+        
+        const nextCard = document.getElementById(`gal-card-${galleryIndex}`);
+        nextCard.classList.remove('next');
+        nextCard.classList.add('active');
+    } else {
+        // End of list
+        closeGallery();
+        controls.innerHTML = '';
+        addUser("Aucune de ces images ne correspond.");
+        showTyping();
+        setTimeout(() => {
+            hideTyping();
+            addSys("D'accord, continuons l'analyse.");
+            setTimeout(() => render('q_water'), 800);
+        }, 1000);
+    }
+}
+
+function closeGallery() {
+    gallery.classList.remove('active');
+}
+
+function selectFromGallery(diagId) {
+    closeGallery();
+    controls.innerHTML = '';
+    addUser("C'est exactement cette image !");
+    state.scores[diagId] += 5; // Strong signal
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        addSys("Image confirmée. J'ajuste le diagnostic.");
+        setTimeout(() => render('q_water'), 800);
+    }, 1000);
+}
+
+function finish() {
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        let topId = Object.keys(state.scores).reduce((a, b) => state.scores[a] > state.scores[b] ? a : b);
+        let maxScore = state.scores[topId];
+        
+        if (maxScore <= 0) {
+            addBot("Les symptômes sont trop mixtes. Vérifiez les bases : arrosage, lumière, drainage.");
+            controls.innerHTML = '<button class="opt-btn" onclick="reset()">Nouveau diagnostic</button>';
+            resetControlsScroll();
+            return;
+        }
+
+        const d = diagnoses[topId];
+        const conf = maxScore > 6 ? "Très Haute" : (maxScore > 4 ? "Haute" : "Moyenne");
+
+        const html = `
+            <div class="diag-card">
+                <div class="diag-title">${d.t}</div>
+                <div class="diag-score">Confiance : ${conf}</div>
+                <div class="diag-sec"><p>${d.d}</p></div>
+                <div class="diag-sec">
+                    <h4>Causes</h4>
+                    <ul>${d.c.map(x => `<li>${x}</li>`).join('')}</ul>
+                </div>
+                <div class="diag-sec">
+                    <h4>Actions</h4>
+                    <ul>${d.a.map(x => `<li>${x}</li>`).join('')}</ul>
+                </div>
+                <div class="diag-warn">
+                    <strong>Attention</strong> ${d.w}
+                </div>
+            </div>
+        `;
+        addBot("Voici mon diagnostic final :");
+        addBot(html);
+        controls.innerHTML = '<button class="opt-btn" onclick="reset()">Nouveau diagnostic</button>';
+        resetControlsScroll();
+    }, 1500);
+}
+
+showStartMenu();
+</script>
+</body>
+</html>
